@@ -19,6 +19,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Use express.static to serve the public folder as a static directory
 app.use(express.static("public"));
 
+//Sets up handlebars
+var exphbs = require("express-handlebars");
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
 // Connect to the Mongo DB
 mongoose.connect("mongodb://localhost/netscrape");
 
@@ -71,7 +77,7 @@ app.get("/articles", function (req, res) {
     db.Article.find({})
         .then(function (dbArticle) {
             // If we were able to successfully find Articles, send them back to the client
-            res.json(dbArticle);
+            res.render("index", {articles : dbArticle});
         })
         .catch(function (err) {
             // If an error occurred, send it to the client
