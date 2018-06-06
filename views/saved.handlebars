@@ -56,11 +56,12 @@
 {{!-- Content --}}
 <div class="container-fluid">
     {{#each articles}}
+    {{#if this.saved}}
     <div class="card card mb-3">
         <div class="card-header">
             <h4>
                 <a class="article-link" href="{{this.link}}">{{this.title}}</a>
-                <button class="btn btn-danger float-right mx-1" id = "save-article" data-id="{{this._id}}">Save</button>
+                <button class="btn btn-danger float-right mx-1" id = "delete-article" data-id="{{this._id}}">Delete</button>
             
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-info float-right mx-1 note-btn" data-toggle="modal" data-target="#note" data-id="{{this._id}}">
@@ -72,5 +73,6 @@
             <p class="card-text">{{this.body}}</p>
         </div>
     </div>
+    {{/if}}
     {{/each}}
 </div>

@@ -16,6 +16,7 @@ var app = express();
 // Configure middleware
 // Use body-parser for handling form submissions
 app.use(bodyParser.urlencoded({ extended: true }));
+
 // Use express.static to serve the public folder as a static directory
 app.use(express.static("public"));
 
@@ -72,12 +73,26 @@ app.get("/scrape", function (req, res) {
 });
 
 // Route for getting all Articles from the db
-app.get("/articles", function (req, res) {
+app.get("/", function (req, res) {
     // Grab every document in the Articles collection
     db.Article.find({})
         .then(function (dbArticle) {
             // If we were able to successfully find Articles, send them back to the client
-            res.render("index", {articles : dbArticle});
+            res.render("index", { articles: dbArticle });
+        })
+        .catch(function (err) {
+            // If an error occurred, send it to the client
+            res.json(err);
+        });
+});
+
+// Route for getting all Articles from the db
+app.get("/saved", function (req, res) {
+    // Grab every document in the Articles collection
+    db.Article.find({})
+        .then(function (dbArticle) {
+            // If we were able to successfully find Articles, send them back to the client
+            res.render("saved", { articles: dbArticle });
         })
         .catch(function (err) {
             // If an error occurred, send it to the client
@@ -120,6 +135,40 @@ app.post("/articles/:id", function (req, res) {
             res.json(err);
         });
 });
+
+// Route for saving/updating an Article's associated Note
+app.put("/articles/db/:id", function (req, res) {
+    var id = req.params.id;
+    console.log('...updating...')
+    console.log('note id: ' + id)
+    //Updates Note in DB
+    db.Note.findOneAndUpdate( { _id: req.params.id }, req.body)
+        .then(function (dbNote) {
+            console.log(dbNote);
+            res.json(dbNote)
+        })
+        .catch(function (err) {
+            // If an error occurred, send it to the client
+            res.json(err);
+        });
+});
+
+//Route for saving/deleting articles
+app.put("/articles/saved/:id", function (req, res) {
+    console.log('...saving article...')
+    // Updates article to include saved boolean
+    db.Article.findOneAndUpdate( { _id: req.params.id }, { $set: { saved: req.body.saved }})
+        .then(function (dbArticle) {
+            console.log(dbArticle)
+            res.json(dbArticle)
+        })
+        .catch(function (err) {
+            // If an error occurred, send it to the client
+            res.json(err);
+        });
+});
+
+
 
 // Start the server
 app.listen(PORT, function () {
