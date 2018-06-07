@@ -24,8 +24,7 @@
 </nav>
 
 <div class="jumbotron" style="background: center / cover no-repeat url('/img/fake-news.jpg'); margin-top: 63px; height: 400px">
-    {{!-- <h1 style ="color: white; position: absolute; top: 8em; left: 8em; font-size: 5em; text-shadow: 2px 2px black;
-    background: black">NetScrape</h1> --}}
+
 </div>
 
 <!-- Modal -->
@@ -33,12 +32,15 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
+                <h5 class="modal-title">Comments</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                <div id = "previous-comments">
+
+                </div>
                 <div class = "form-group" id = "note-title">
 
                 </div>
@@ -47,7 +49,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
 
             </div>
         </div>
@@ -65,7 +67,7 @@
             
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-info float-right mx-1 note-btn" data-toggle="modal" data-target="#note" data-id="{{this._id}}">
-                Add a Note
+                Comment
             </button>
             
         </div>

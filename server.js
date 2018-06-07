@@ -69,8 +69,8 @@ app.get("/scrape", function (req, res) {
                 });
         });
 
-        // If we were able to successfully scrape and save an Article, send a message to the client
-        res.send("Scrape Complete");
+        // If we were able to successfully scrape reload template with new saved articles.
+        res.render("index", { articles: dbArticle });
     });
 });
 

@@ -6,6 +6,7 @@ $(document).ready(function () {
         $("#note-body").empty();
         $("#note-title").empty();
         $(".modal-title").empty();
+        $("#previous-comments").empty();
         $("#savenote").remove()
         // Save the id from the p tag
         var thisId = $(this).attr("data-id");
@@ -21,20 +22,27 @@ $(document).ready(function () {
                 // The title of the article
                 $(".modal-title").append("<h5>" + data.title + "</h5>");
                 // An input to enter a new title
-                $("#note-title").append("<label for='titleinput' class='col-form-label'>Title:</label>")
-                    .append("<input id='titleinput' class='form-control' name='title'>");
+                $("#note-title").append("<label for='titleinput' class='col-form-label'>Name:</label>")
+                    .append("<input id='titleinput' class='form-control' name='Name' required>");
                 // A textarea to add a new note body
-                $("#note-body").append("<label for='bodyinput' class='col-form-label'>Note:</label>")
-                    .append("<textarea id='bodyinput' class='form-control' name='body'></textarea>");
+                $("#note-body").append("<label for='bodyinput' class='col-form-label'>Comment:</label>")
+                    .append("<textarea id='bodyinput' class='form-control' name='body' required></textarea>");
                 // A button to submit a new note, with the id of the article saved to it
-                $(".modal-footer").append("<button data-id='" + data._id + "' id='savenote' data-dismiss='modal' class='btn btn-secondary'>Save</button>");
+                $(".modal-footer").append("<button data-id='" + data._id + "' id='savenote' data-dismiss='modal' class='btn btn-primary'>Post</button>");
 
                 // If there's a note in the article
                 if (data.note) {
-                    // Place the title of the note in the title input
-                    $("#titleinput").val(data.note.title);
+                    // Populate comments in modal
+                    $("#previous-comments").append(`
+                    <div class = "card">
+                        <div class = "card-header">
+                        ${data.note.title}
+                        </div>
+                        <div class = "card-body">
+                        ${data.note.body}
+                        </div>
+                    </div>`);
                     // Place the body of the note in the body textarea
-                    $("#bodyinput").val(data.note.body);
                     console.log(data.note._id)
                     $("#savenote").attr('data-note', data.note._id)
                 }
@@ -46,44 +54,51 @@ $(document).ready(function () {
         // Grab the id associated with the article from the submit button
         var thisId = $(this).attr("data-id");
         var noteId = $(this).attr("data-note");
-
-        //If no associated note, then post a new one.
-        if (noteId === undefined) {
-            console.log('new note')
-            // Run a POST request to change the note, using what's entered in the inputs
-            $.ajax({
-                method: "POST",
-                url: "/articles/" + thisId,
-                data: {
-                    // Value taken from title input
-                    title: $("#titleinput").val(),
-                    // Value taken from note textarea
-                    body: $("#bodyinput").val()
-                }
-            })
-                .then(function (data) {
-                    // Log the response
-                    console.log(data);
-                });
+        if ($("#titleinput").val().trim() === "") {
+            alert("You must post a name")
         }
-        //If there's already a note on that article, then update it. 
+        else if ($("#bodyinput").val().trim() === "") {
+            alert("Comment can't be blank")
+        }
         else {
-            console.log('update note')
-            console.log('note id: ' + noteId)
-            $.ajax({
-                method: "PUT",
-                url: "/articles/db/" + noteId,
-                data: {
-                    // Value taken from title input
-                    title: $("#titleinput").val(),
-                    // Value taken from note textarea
-                    body: $("#bodyinput").val()
-                }
-            })
-                .then(function (data) {
-                    // Log the response
-                    console.log(data);
-                });
+            //If no associated note, then post a new one.
+            // if (noteId === undefined) {
+                console.log('new note')
+                // Run a POST request to change the note, using what's entered in the inputs
+                $.ajax({
+                    method: "POST",
+                    url: "/articles/" + thisId,
+                    data: {
+                        // Value taken from title input
+                        title: $("#titleinput").val(),
+                        // Value taken from note textarea
+                        body: $("#bodyinput").val()
+                    }
+                })
+                    .then(function (data) {
+                        // Log the response
+                        console.log(data);
+                    });
+            // }
+            // //If there's already a note on that article, then update it. 
+            // else {
+            //     console.log('update note')
+            //     console.log('note id: ' + noteId)
+            //     $.ajax({
+            //         method: "PUT",
+            //         url: "/articles/db/" + noteId,
+            //         data: {
+            //             // Value taken from title input
+            //             title: $("#titleinput").val(),
+            //             // Value taken from note textarea
+            //             body: $("#bodyinput").val()
+            //         }
+            //     })
+            //         .then(function (data) {
+            //             // Log the response
+            //             console.log(data);
+            //         });
+            // }
         }
     });
 
