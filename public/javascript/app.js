@@ -10,6 +10,7 @@ $(document).ready(function () {
         $("#savenote").remove()
         // Save the id from the p tag
         var thisId = $(this).attr("data-id");
+        console.log("comment button: " + thisId)
 
         // Now make an ajax call for the Article
         $.ajax({
@@ -31,19 +32,26 @@ $(document).ready(function () {
                 $(".modal-footer").append("<button data-id='" + data._id + "' id='savenote' data-dismiss='modal' class='btn btn-primary'>Post</button>");
 
                 // If there's a note in the article
-                if (data.note) {
+                if (data.note.length > 0) {
+                    console.log(data.note)
                     // Populate comments in modal
+                    for (var i = 0; i < data.note.length; i++) {
+
                     $("#previous-comments").append(`
                     <div class = "card">
                         <div class = "card-header">
-                        ${data.note.title}
+                        ${data.note[i].title}
+                        <button class='btn btn-danger float-right btn-sm del-comment' data-id = ${thisId} data-dismiss="modal" data-note='${data.note[i]._id}'>
+                        x
+                        </button>
                         </div>
                         <div class = "card-body">
-                        ${data.note.body}
+                        ${data.note[i].body}
                         </div>
                     </div>`);
+                    console.log(data.note[i]._id)
+                    }
                     // Place the body of the note in the body textarea
-                    console.log(data.note._id)
                     $("#savenote").attr('data-note', data.note._id)
                 }
             });
@@ -138,4 +146,17 @@ $(document).ready(function () {
                 location.reload();
             });
     });
+
+    $(document).on("click", ".del-comment", function() {
+        var articleId = $(this).attr("data-id");
+        var noteId = $(this).attr("data-note");
+        $.ajax({
+            method: "DELETE",
+            url: "/comments/" + noteId,
+        })
+        .then(function(data){
+            console.log(data)
+            console.log('deleted')
+        })
+    })
 })
